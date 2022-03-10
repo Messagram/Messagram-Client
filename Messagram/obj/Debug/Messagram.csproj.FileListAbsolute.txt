@@ -1,0 +1,12 @@
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\bin\Debug\Messagram.exe.config
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\bin\Debug\Messagram.exe
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\bin\Debug\Messagram.pdb
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.csproj.AssemblyReference.cache
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.csproj.SuggestedBindingRedirects.cache
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.Form1.resources
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.Properties.Resources.resources
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.csproj.GenerateResource.cache
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.csproj.CoreCompileInputs.cache
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.exe
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.pdb
+C:\Users\Dell Inspiron\source\repos\Messagram\Messagram\obj\Debug\Messagram.Form2.resources
