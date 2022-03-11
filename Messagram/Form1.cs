@@ -22,16 +22,11 @@ namespace Messagram
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
             try
             {
                 server_thread = new Thread(Messagram.connect);
                 server_thread.Start();
-                Thread.Sleep(5000); // Wait 5 seconds to connect to Messagram Server
+                Thread.Sleep(3000); // Wait 5 seconds to connect to Messagram Server
                 if (Messagram.connected)
                 {
                     MessageBox.Show("Connected to Messagram Chat!", "Success");
@@ -39,20 +34,24 @@ namespace Messagram
                 else
                 {
                     MessageBox.Show("Unable to connect to Messagram Chat, Try again later!", "Error");
+                    Environment.Exit(0);
                 }
-            } catch
+            }
+            catch
             {
                 MessageBox.Show("Error", "Unable to connect to Messagram Chat, Try again later!");
+                Environment.Exit(0);
             }
-
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            Thread t = new Thread(()=>Messagram.send_command("testing this\n"));
-            t.Start();
-            Thread.Sleep(1000);
-            t.Abort();
+            if (textBox1.Text == null || textBox2.Text == null) { 
+                MessageBox.Show("No information provided!");
+                return;
+            }
+            Messagram.send_command(textBox1.Text + "\n");
+            Messagram.send_command(textBox2.Text + "\n");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -79,14 +78,21 @@ namespace Messagram
 
         // Threads
         public static Thread listener_thread;
+        public static Thread updown;
 
         // Connect To Messagram Server
         public static void connect()
         {
             Messagram.client = new TcpClient(messagram_ip, messagram_port);
             Messagram.connected = true;
+
+            // start messagram server listener
             listener_thread = new Thread(Messagram.listener);
             listener_thread.Start();
+
+            // up down checker 
+            updown = new Thread(Messagram.up_down_checker);
+            updown.Start();
         }
 
         public static void listener()
@@ -107,6 +113,18 @@ namespace Messagram
         {
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
             Messagram.stream.Write(data, 0, data.Length);
+        }
+
+        public static void up_down_checker()
+        {
+            while(true)
+            {
+                if(Messagram.connected == false)
+                {
+                    MessageBox.Show("Messagram server has shut down! Closing....", "Error");
+                    Environment.Exit(0);
+                }
+            }
         }
 
     }
