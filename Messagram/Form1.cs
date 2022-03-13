@@ -5,8 +5,10 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -51,6 +53,7 @@ namespace Messagram
                 return;
             }
             Messagram.send_command(textBox1.Text + "\n");
+            
             Messagram.send_command(textBox2.Text + "\n");
         }
 
@@ -63,6 +66,41 @@ namespace Messagram
         {
             Environment.Exit(0);
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Messagram.client.Close();
+        }
+    }
+
+
+
+
+
+
+    class Buffer
+    {
+        public static string data;
+
+        public static bool check_new_msg()
+        {
+            if(Buffer.data != "" || Buffer.data.Length == 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        
+        public static string get_new_msg()
+        {
+            if (Buffer.data != "" || Buffer.data.Length == 0)
+            {
+                string f = Buffer.data;
+                Buffer.data = "";
+                return f;
+            }
+            return "";
+        }
     }
 
     class Messagram
@@ -71,6 +109,8 @@ namespace Messagram
         public static string messagram_ip = "skrillec.ovh";
         public static Int32 messagram_port = 30;
         public static bool connected = false;
+        public static string[] cmds;
+        public static int cmds_count;
 
         // System.Net.Sockets Objects
         public static TcpClient client;
@@ -79,6 +119,8 @@ namespace Messagram
         // Threads
         public static Thread listener_thread;
         public static Thread updown;
+
+        public static WebClient w = new WebClient();
 
         // Connect To Messagram Server
         public static void connect()
@@ -89,22 +131,36 @@ namespace Messagram
             // start messagram server listener
             listener_thread = new Thread(Messagram.listener);
             listener_thread.Start();
-
-            // up down checker 
-            updown = new Thread(Messagram.up_down_checker);
-            updown.Start();
         }
 
         public static void listener()
         {
-            Byte[] data = new byte[256];
-            string Response = String.Empty;
-            NetworkStream strm = Messagram.client.GetStream();
-            Messagram.stream = strm;
-            while (true) {
+            try
+            {
+                Byte[] data = new byte[256];
+                string Response = String.Empty;
+                NetworkStream strm = Messagram.client.GetStream();
+                Messagram.stream = strm;
+                while (true)
+                {
 
-                Int32 b = strm.Read(data, 0, data.Length);
-                Response = System.Text.Encoding.ASCII.GetString(data, 0, b);
+                    Int32 b = strm.Read(data, 0, data.Length);
+                    Response = System.Text.Encoding.ASCII.GetString(data, 0, b);
+
+                    dynamic d = JsonSerializer.Deserialize<object>(Response);
+
+
+
+                    switch(Response)
+                    {
+                        case "msg":
+                            // Handle new message JSON response here
+                            return;
+                    }
+                }
+            } catch
+            {
+                Messagram.connected = false;
             }
 
         }
@@ -115,17 +171,11 @@ namespace Messagram
             Messagram.stream.Write(data, 0, data.Length);
         }
 
-        public static void up_down_checker()
+        public static void shut_down()
         {
-            while(true)
-            {
-                if(Messagram.connected == false)
-                {
-                    MessageBox.Show("Messagram server has shut down! Closing....", "Error");
-                    Environment.Exit(0);
-                }
-            }
+            Messagram.client.Close();
+            Messagram.connected = false;
+            Messagram.listener_thread.Abort();
         }
-
     }
 }
