@@ -1,6 +1,6 @@
 <div align="center">
 <h1>Messagram</h1>
-<div>
+</div>
 
 ### Information about Messagram
 
